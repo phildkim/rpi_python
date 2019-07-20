@@ -12,10 +12,10 @@ _MIN_TEMPERATURE = 60.0
 _DEGREE = u'\xb0F'.encode('utf8')
 
 # GLOBAL CONSTANT SMTP VARIABLES
-_RECEIPANT = 'philipkim337@gmail.com'
+_RECEIPANT = 'youremail@gmail.com'
 
 password = {
-    'pw': '2539Excellent',         
+    'pw': 'password',         
 }
 
 temp_ini = { 
@@ -27,20 +27,20 @@ temp_ini = {
 
 mariadb_ini = {
     'host': 'localhost',
-    'user': 'hydropi_usr',
-    'password': '2539Excellent',
-    'database': 'temperature_db',
+    'user', 'user'
+    'password': 'password',
+    'database': 'database',
     'charset': 'utf8',
     'use_unicode': 'True',
 }
 
 smtp_ini = {
-    'sender': 'hydrosensor2019@gmail.com',
+    'sender': 'youremail@gmail.com',
     'receipant': _RECEIPANT,
     'server': 'smtp.gmail.com',
     'port': '587',
     'tls': 'yes',
-    'login': 'hydrosensor2019@gmail.com',
+    'login': 'youremail@gmail.com',
     'subject': 'DS18B20 Sensor(RTD) from RaspberryPi',
 }
 
