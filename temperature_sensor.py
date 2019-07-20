@@ -14,7 +14,7 @@ from thread_service import ThreadCount
 # ATLAS_I2C TEMPERATURE SENSOR CLASS
 class atlas_i2c:
     default_bus = 1
-    long_timeout = 10
+    long_timeout = 9
     short_timeout = .5
     default_address = 102
     def __init__(self, address=default_address, bus=default_bus):
@@ -52,19 +52,6 @@ class atlas_i2c:
         self.file_write.close()
 
 
-# DROP TABLE & CSV FUNCTION
-def remove_mariadb():
-    cmd = 'rm ' + os.path.abspath('daily_reports/report-*')
-    os.system(cmd)
-    try:
-        db = Mariadb()
-        db.execute('DROP TABLE temperature_tbl;')
-        print "\t\tDROP TABLE"
-    except:
-        pass
-    return
-
-
 # CREATE TABLE FUNCTION
 def create_mariadb():
     try:
@@ -79,18 +66,15 @@ def create_mariadb():
         pass
     return
 
-
 # INSERT DATA TO DB FUNCTION
 def insert_mariadb(data):
     db = Mariadb()
     db.execute('INSERT INTO temperature_tbl (degree, date) VALUES ("{}", "{}");'.format(data, str(time.ctime())))
     return
 
-
 # CREATE CSV FILE FUNCTION
 def csv_filename():
     return os.path.abspath('daily_reports/report-' + str(time.strftime('%d')) + '.csv')
-
 
 # WRITE CSV FILE FUNCTION
 def write_csv_file():
@@ -102,39 +86,13 @@ def write_csv_file():
     csv_file.close()
     return
 
-
-# QUERY TO HTML FUNCTION
-def query_to_html(list_2d):
-    html_table=u'<table align="center" border="1" bordercolor=00000 cellspacing="0" cellpadding="1" style="table-layout:fixed;vertical-align:bottom;font-size:15px;font-family:verdana,sans-serif;border-collapse:collapse;border:1px solid rgb(130,130,130)" >'
-    list_2d[0] = [u'<b>' + i + u'</b>' for i in list_2d[0]]
-    for row in list_2d:
-        html_row = u'<tr>'
-        html_row += u'<td align="left" style="padding:1px 4px">'+unicode(row[0])+u'</td>'
-        row.remove(row[0])
-        html_row = html_row + ''.join([u'<td align="left" style="padding:1px 4px">'+unicode(x)+u'</td>'for x in row])
-        html_row += '</tr>'
-        html_table += html_row
-    html_table += '</table>'
-    return html_table
-
-
-# RETURN HTML TABLE FUNCTION
-def html_db_table(sql):
-    db = Mariadb()
-    return query_to_html(db.get_rows(sql))
-
-
 # SEND EMAIL FUNCTION
 def send_email(msg, email):
     mailer = Mailer()
     date_msg = msg[msg.find('\n') + 1:len(msg)] + '<br>'
-    if email == 'ALERT REPORT':
-        degree_msg = msg[0:msg.find('$')]
-    else:
-        degree_msg = str(html_db_table('SELECT * FROM temperature_tbl;'))
+    degree_msg = msg[0:msg.find('$')]
     mailer.send_report(str(time.strftime('%m/%d/%Y')), date_msg, degree_msg, email, csv_filename())
     return
-
 
 # TEMPERATURE CHECK FUNCTION
 def check_temperature(temp_msg):
@@ -144,8 +102,6 @@ def check_temperature(temp_msg):
         msg = str("MAXIMUM TEMPERATURE: %s$\nDATE & TIME: %s" % (temp_msg, date_time))
     elif int(temp_msg[0:2]) <= config.temp_ini['min']:
         msg = str("MINIMUM TEMPERATURE: %s$\nDATE & TIME: %s" % (temp_msg, date_time))
-    elif daily_report_time == config.temp_ini['report']:
-        msg = str("DNORMAL TEMPERATURE: %s$\nDATE & TIME: %s" % (temp_msg, date_time))
     else:
         msg = str("NORMAL TEMPERATURE: %s $\nDATE & TIME: %s" % (temp_msg, date_time))
     return msg
@@ -159,11 +115,13 @@ def stop_atlas(message, device_info, device_status, delay_time, temp_msg):
             user_input = str(raw_input(message))
         except:
             config.print_info(device_info, device_status, delay_time, temp_msg, "OFF")
+            os.system('cd /home/pi/RaspberryPi/src; crontab -r')
             print "\t\t\tGOODBYE!\n"
             running = False
         else:
             if user_input == '1':           
                 config.print_info(device_info, device_status, delay_time, temp_msg, "OFF")
+                os.system('cd /home/pi/RaspberryPi/src; crontab -r')
                 print "\t\t\tGOODBYE!"
                 running = False
             else:
@@ -190,14 +148,6 @@ def main():
             config.print_info(device_info, device_status, delay_time, temp_msg, " ON")
             if temp_msg[0:6] == "NORMAL":
                 insert_mariadb(print_device)
-            elif temp_msg[0:7] == 'DNORMAL':
-                print "\t\tDAILY REPORT TIME!!"
-                write_csv_file()
-                send_email(temp_msg, 'DAILY REPORT')
-                remove_mariadb()
-                create_mariadb()
-                time.sleep(60)
-                continue
             else:
                 insert_mariadb(print_device)
                 insert_mariadb('ALERT')

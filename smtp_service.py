@@ -26,14 +26,13 @@ class Mailer:
         full_email['To'] = self.receipant
         email_addresses = self.receipant.split(',')
         # CSV FILE 
-        attachment = MIMENonMultipart('html', 'csv', charset='utf-8')
-        attachment.add_header('Content-Disposition', 'attachment', filename=_filename)
+        attachment = MIMENonMultipart('plain', 'csv', charset='utf-8')
+        attachment.add_header('Content-Disposition', 'attachment', filename=_filename[39:len(_filename)])
         attachment.set_payload(open(_filename, "rb").read())
         full_email.attach(attachment)
         # HTML TABLE
         body = MIMEMultipart('alternative')
-        body.attach(MIMEText((short_description + additional_description).encode('utf-8'),
-                             'html', _charset='utf-8'))
+        body.attach(MIMEText((short_description + additional_description).encode('utf-8'), 'html', _charset='utf-8'))
         body.attach(MIMEText(("""\
                                 <html>
                                   <head></head>
@@ -46,8 +45,7 @@ class Mailer:
                                     </div>
                                   </body>
                                 </html>
-                                """).encode('utf-8'),
-                             'html', _charset='utf-8'))
+                                """).encode('utf-8'), 'html', _charset='utf-8'))
         full_email.attach(body)        
         s = smtplib.SMTP(self.server, self.port)
         if self.tls == 'yes':
