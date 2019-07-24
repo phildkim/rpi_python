@@ -54,3 +54,10 @@ _MIN_TEMPERATURE = 60.0             # Minimum temperature for alert
 # GLOBAL CONSTANT SMTP VARIABLES
 _RECEIPANT = 'youremail@gmail.com'  # For multiple emails: 'abc1@gmail.com,abc2@gmail.com' (comma no space)
 ```
+### Other files:
+python files | purpose
+-------------|--------
+smtp_service.py | smtp gmail service to send emails.
+mariadb_service.py | MySQL class to use anywhere.
+thread_serice.py | Threading to count for alert.
+
