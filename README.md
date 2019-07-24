@@ -23,8 +23,8 @@ def main():
 ```
 #### In temperature_sensor.py:
 ```python
-# Main loop, will stop the loop if you press 'Control + c' and press '1', otherwise any other key to continue.
-while is_running:
+    # Main loop, will stop the loop if you press 'Control + c' and press '1', otherwise any other key to continue.
+    while is_running:
         try:
             print_device = str(sensor_device.query("R")) + config.temp_ini['degree']
             # This check_temperature function checks temperature every 10 seconds
