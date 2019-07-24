@@ -6,6 +6,9 @@ $ python crontab_service.py
 ```python
 job = cron.new(command='/usr/bin/python /home/pi/RaspberryPi/src/call_daily_report.py')
 job.hour.every(22)  # job will execute call_daily_report.py at 22:00 
+
+# This will execute the main program.
+os.system('cd ~/RaspberryPi/src; /usr/bin/python /home/pi/RaspberryPi/src/temperature_sensor.py')
 ```
 #### In call_daily_report.py:
 ```python
