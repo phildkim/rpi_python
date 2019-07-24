@@ -46,7 +46,7 @@ while is_running:
 ```
 #### In config.py:
 ```python
-# GLOBAL CONSTANT TEMPERATURE VARIABLES
+# GLOBAL CONSTANT TEMPERATURE VARIABLES (decimals)
 _SECONDS = 60.0                     # Seconds to wait when alert is signaled
 _MAX_TEMPERATURE = 90.0             # Maximum temperature for alert
 _MIN_TEMPERATURE = 60.0             # Minimum temperature for alert
