@@ -44,3 +44,13 @@ while is_running:
                     is_thread = thread.run()
         except KeyboardInterrupt:
 ```
+#### In config.py:
+```python
+# GLOBAL CONSTANT TEMPERATURE VARIABLES
+_SECONDS = 60.0                     # Seconds to wait when alert is signaled
+_MAX_TEMPERATURE = 90.0             # Maximum temperature for alert
+_MIN_TEMPERATURE = 60.0             # Minimum temperature for alert
+
+# GLOBAL CONSTANT SMTP VARIABLES
+_RECEIPANT = 'youremail@gmail.com'  # For multiple emails: 'abc1@gmail.com,abc2@gmail.com' (comma no space)
+```
