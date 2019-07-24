@@ -1,3 +1,3 @@
-```bash
+```terminal
 $ python crontab_service.py
 ```
